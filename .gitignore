@@ -1,0 +1,37 @@
+# === ENVIRONMENT VARIABLES (Wajib Disembunyikan) ===
+# File ini berisi GEMINI_API_KEY kamu. Jangan sampai terunggah!
+.env
+.env.local
+.env.*
+*.env
+
+# === PYTHON FILE CACHES ===
+# File kompilasi otomatis dari Python, tidak perlu masuk git
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# === VIRTUAL ENVIRONMENTS ===
+# Folder library hasil 'pip install' di komputer lokalmu
+venv/
+.venv/
+env/
+ENV/
+dist/
+build/
+*.egg-info/
+
+# === DATA & OUTPUT FILES ===
+# Menyembunyikan folder kumpulan CV lokal agar privasi pelamar aman
+kumpulan_cv/
+*.pdf
+*.docx
+*.xlsx
+
+# === SYSTEM FILES ===
+# File sampah bawaan Sistem Operasi
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
