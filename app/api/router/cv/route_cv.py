@@ -1,7 +1,7 @@
 import os
 import time
 import shutil
-from fastapi import APIRouter, UploadFile, File
+from fastapi import APIRouter, UploadFile, File, Form
 from starlette.concurrency import run_in_threadpool
 from app.common.responses.response_model import ResponseModel
 from app.lib.utils.cv_analyzer import CVRatingAnalyzer, analyze_cv as analyze_cv_file
@@ -73,7 +73,7 @@ async def upload_cv(file: UploadFile = File(...)):
 
 
 @cv_router.post("/analyze")
-async def analyze_cv_route(file: UploadFile = File(...)):
+async def analyze_cv_route(file: UploadFile = File(...), prompt: str = Form("")):
 
     if file is None:
         res = ResponseModel(
@@ -111,7 +111,7 @@ async def analyze_cv_route(file: UploadFile = File(...)):
     try:
         await run_in_threadpool(_save_upload_file, file, file_path)
 
-        analyze_result = await run_in_threadpool(analyze_cv_file, file_path)
+        analyze_result = await run_in_threadpool(analyze_cv_file, file_path, prompt)
         res = ResponseModel(
             status_code=200,
             message="CV analyzed successfully",

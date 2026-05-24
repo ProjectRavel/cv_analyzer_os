@@ -33,27 +33,27 @@ kriteria_posisi = """
     dan terbiasa dengan konsep microservices. Berpengalaman di projek nyata lebih disukai.
     """
 
-prompt_instruksi = f"""
-Bertindaklah sebagai Technical Recruiter. Analisis dokumen CV yang terlampir secara objektif.
-Berikan rating skor dan poin-poin evaluasi berdasarkan kriteria posisi berikut:
-
-{kriteria_posisi}
-
-ATURAN PENTING UNTUK SKORING:
-- Semua nilai skor (skor_objektif, skor_pengalaman_kerja, skor_pendidikan, skor_keterampilan) HARUS menggunakan skala angka bulat dari 0 sampai 100.
-- Nilai 100 artinya sangat sempurna memenuhi kriteria, nilai 0 artinya tidak ada sama sekali.
-
-Isi dan ekstrak data sesuai dengan skema JSON yang diminta secara akurat.
-"""
-
 # initialisasi client GENAI
 
 # genai adalah library untuk berinteraksi dengan Google GenAI API, yang memungkinkan kita untuk memanfaatkan kemampuan AI dalam berbagai aplikasi, termasuk analisis teks, pemrosesan bahasa alami, dan lainnya. Dengan menggunakan genai, kita dapat mengirim permintaan ke model AI untuk mendapatkan respons yang sesuai dengan kebutuhan aplikasi kita.
 client = genai.Client()
 
 
-def analyze_cv(file_path: str) -> CVRatingAnalyzer:
+def analyze_cv(file_path: str, prompting: str) -> CVRatingAnalyzer:
     # Implementation for analyzing CV and returning the rating analyzer object
+    
+    prompt_instruksi = f"""
+    Bertindaklah sebagai Technical Recruiter. Analisis dokumen CV yang terlampir secara objektif.
+    Berikan rating skor dan poin-poin evaluasi berdasarkan kriteria posisi berikut:
+
+    {prompting}
+
+    ATURAN PENTING UNTUK SKORING:
+    - Semua nilai skor (skor_objektif, skor_pengalaman_kerja, skor_pendidikan, skor_keterampilan) HARUS menggunakan skala angka bulat dari 0 sampai 100.
+    - Nilai 100 artinya sangat sempurna memenuhi kriteria, nilai 0 artinya tidak ada sama sekali.
+
+    Isi dan ekstrak data sesuai dengan skema JSON yang diminta secara akurat.
+    """
     try:
         file_uploading = client.files.upload(file=file_path)
         response = client.models.generate_content(
