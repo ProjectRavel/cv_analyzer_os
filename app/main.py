@@ -1,7 +1,7 @@
 # CV ANALYZER OPENSOURCE - CREATING WITH GEMINI FLASH 3.0
 
 from fastapi import FastAPI
-from app.api.router.router import api_router
+from api.router.router import api_router
 
 
 # routes

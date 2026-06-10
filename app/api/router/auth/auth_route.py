@@ -1,6 +1,6 @@
-from app.common.responses.response_model import ResponseModel
-from app.lib.utils.hash_password import hash_password, verify_password
-from app.common.config.jwt import create_acces_token
+from common.responses.response_model import ResponseModel
+from lib.utils.hash_password import hash_password, verify_password
+from common.config.jwt import create_acces_token
 from fastapi import APIRouter, Form
 
 auth_router = APIRouter(
@@ -27,7 +27,7 @@ async def login(email: str = Form(...), password: str = Form(...)):
             )
             return response.to_dict()
 
-        token = create_acces_token(data={"sub": email})
+        token = create_acces_token(data={"sub": email}),
 
         return ResponseModel(
             status_code=200,

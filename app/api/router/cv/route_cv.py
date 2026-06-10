@@ -3,8 +3,8 @@ import time
 import shutil
 from fastapi import APIRouter, UploadFile, File, Form
 from starlette.concurrency import run_in_threadpool
-from app.common.responses.response_model import ResponseModel
-from app.lib.utils.cv_analyzer import CVRatingAnalyzer, analyze_cv as analyze_cv_file
+from common.responses.response_model import ResponseModel
+from lib.utils.cv_analyzer import CVRatingAnalyzer, analyze_cv as analyze_cv_file
 
 cv_router = APIRouter(
     prefix="/cv",
@@ -75,6 +75,7 @@ async def upload_cv(file: UploadFile = File(...)):
 @cv_router.post("/analyze")
 async def analyze_cv_route(file: UploadFile = File(...), prompt: str = Form("")):
 
+    # validation file
     if file is None:
         res = ResponseModel(
             status_code=400,
@@ -102,6 +103,7 @@ async def analyze_cv_route(file: UploadFile = File(...), prompt: str = Form(""))
         )
         return res.to_dict()
 
+    # input the file into a folder
     timestamp = int(time.time())
     file_extension = os.path.splitext(file.filename)[1]
     file_name = f"{os.path.splitext(file.filename)[0]}_{timestamp}{file_extension}"
@@ -109,8 +111,10 @@ async def analyze_cv_route(file: UploadFile = File(...), prompt: str = Form(""))
     file_path = os.path.join(UPLOADS_DIR, file_name)
 
     try:
+        # concurrency for file uploading make the server not crash
         await run_in_threadpool(_save_upload_file, file, file_path)
 
+        # analyze the cv and use concurrenct for waiting the response
         analyze_result = await run_in_threadpool(analyze_cv_file, file_path, prompt)
         res = ResponseModel(
             status_code=200,
@@ -120,7 +124,9 @@ async def analyze_cv_route(file: UploadFile = File(...), prompt: str = Form(""))
 
     except Exception as e:
         res = ResponseModel(
-            status_code=500, message=f"Failed to save file: {str(e)}", data={}
+            status_code=500, 
+            message=f"Failed to save file: {str(e)}",
+            data={}
         )
         return res.to_dict()
     return res.to_dict()

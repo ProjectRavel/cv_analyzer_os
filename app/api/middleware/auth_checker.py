@@ -1,6 +1,6 @@
 from fastapi import Header, HTTPException
 from jose import JWTError, jwt
-from app.common.config.jwt import SECRET_KEY, ALGORITHM
+from common.config.jwt import SECRET_KEY, ALGORITHM
 
 
 def verify_token(authorization: str = Header(None)) -> str:

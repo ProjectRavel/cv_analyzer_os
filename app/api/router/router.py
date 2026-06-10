@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends
 
-from app.api.middleware.auth_checker import verify_token
-from app.api.router.health.route_health import health_router
-from app.api.router.auth.auth_route import auth_router
-from app.api.router.cv.route_cv import cv_router
+from api.middleware.auth_checker import verify_token
+from api.router.health.route_health import health_router
+from api.router.auth.auth_route import auth_router
+from api.router.cv.route_cv import cv_router
 
 api_router = APIRouter()
 
