@@ -1,41 +1,36 @@
+from fastapi import APIRouter, Form
 from common.responses.response_model import ResponseModel
 from lib.utils.hash_password import hash_password, verify_password
 from common.config.jwt import create_acces_token
-from fastapi import APIRouter, Form
+from fastapi import Depends
+from sqlalchemy.orm import Session
+from database.dependencies import get_db
+from schemas.user import RegisterRequest
+from services.auth_services import AuthService
 
 auth_router = APIRouter(
     prefix="/auth",
     tags=["auth"],
 )
 
-fake_user_db = {"email": "keza@gmail.com", "password": hash_password("kezacantik")}
-
-
 @auth_router.post("/login")
-async def login(email: str = Form(...), password: str = Form(...)):
-    if email == "" or password == "":
-        response = ResponseModel(
-            status_code=400, message="Email and password are required", data={}
-        )
-        return response.to_dict()
 
-    if email == fake_user_db["email"]:
-
-        if not verify_password(password, fake_user_db["password"]):
-            response = ResponseModel(
-                status_code=401, message="Invalid email or password", data={}
-            )
-            return response.to_dict()
-
-        token = create_acces_token(data={"sub": email}),
-
+@auth_router.post("/register")
+async def register(
+    payload: RegisterRequest,
+    db: Session = Depends(get_db)
+):
+    try:
+        user = AuthService.register(db, payload)
         return ResponseModel(
-            status_code=200,
-            message="Login successful",
-            data={"access_token": token, "token_type": "bearer"},
+            status_code=201,
+            message="User registered successfully",
+            data={"user_id": user.id}
         ).to_dict()
-
-    response = ResponseModel(
-        status_code=401, message="Invalid email or password", data={}
-    )
-    return response.to_dict()
+    except ValueError as e:
+        return ResponseModel(
+            status_code=400,
+            message=str(e),
+            data={}
+        ).to_dict()
+    

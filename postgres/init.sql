@@ -10,6 +10,14 @@ CREATE TABLE IF NOT EXISTS documents (
     created_at TIMESTAMP DEFAULT NOW()
 );
 
+CREATE TABLE IF NOT EXISTS users (
+    id BIGSERIAL PRIMARY KEY,
+    username TEXT UNIQUE,
+    email TEXT UNIQUE,
+    password TEXT,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
 -- Create an index on the embedding column to optimize similarity searches.
 CREATE INDEX IF NOT EXISTS documents_embedding_idx
 ON documents
